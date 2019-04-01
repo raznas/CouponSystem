@@ -14,36 +14,12 @@ import DB.Database;
 public class CompanyDBDAO implements CompanyDAO {
 	Connection con;
 
-	/*@Override
-	public void addCompany(Company company) throws Exception {
-		Connection connection = DriverManager.getConnection(Database.geUrl());
-		//con = DriverManager.getConnection(Database.getDBUrl());
-		String sql = "INSERT INTO COMPANY (compName,password,email) VALUES(?,?,?)";
-		try (PreparedStatement pstmt = con.prepareStatement(sql)) {
-
-			pstmt.setString(1, company.getCompName());
-			pstmt.setString(2, company.getPassword());
-			pstmt.setString(3, company.getEmail());
-
-			pstmt.executeUpdate();
-			System.out.println("Company created" + company.toString());
-		} catch (SQLException e) {
-			e.printStackTrace();
-						throw new Exception("Company creation failed");
-						
-		} finally {
-			con.close();
-		}
-
-	}
-	*/
-	
 	@Override
 	public void addCompany(Company company) throws Exception {
-		Connection connection = DriverManager.getConnection(Database.geUrl(), "root", "abc123");
-		System.out.println(connection);
-		//connection = DriverManager.getConnection(Database.geUrl());
-		String sql = "insert into Company (ID, COMPNAME, PASSWORD, EMAIL) values (?,?,?,?)";
+		Connection connection = DriverManager.getConnection(
+				"jdbc:mysql://127.0.0.1:3306/coupon_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT",
+				"root", "root");
+		String sql = "INSERT INTO COMPANY (COMP_NAME, PASSWORD, EMAIL) VALUES (?,?,?)";
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
 			pstmt.setString(1, company.getCompName());
@@ -51,19 +27,41 @@ public class CompanyDBDAO implements CompanyDAO {
 			pstmt.setString(3, company.getEmail());
 
 			pstmt.executeUpdate();
-			System.out.println("Company created" + company.toString());
+			System.out.println("Insterted " + company + " succesfully ");
 		} catch (SQLException e) {
 			e.printStackTrace();
-						throw new Exception("Company creation failed");
-						
+			throw new Exception("Company instert failed");
+
 		} finally {
-			con.close();
+			connection.close();
 		}
 
 	}
-
 	@Override
 	public void delCompany(Company company) throws Exception {
+		Connection connection = DriverManager.getConnection(
+				"jdbc:mysql://127.0.0.1:3306/coupon_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT",
+				"root", "root");
+		String sql = "DELETE FROM COMPANY WHERE id=?";
+		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+			System.out.println(company);
+			pstmt.setLong(1, company.getId());
+			pstmt.executeUpdate();
+			connection.commit();
+			System.out.println("Deleted " + company + " succesfully ");
+		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new Exception("Database error");
+			}
+			throw new Exception("failed to remove product");
+		} finally {
+			connection.close();
+		}
+	}
+	@Override
+	/*public void delCompany(Company company) throws Exception {
 		con = DriverManager.getConnection(Database.getDBUrl());
 		String pre1 = "DELETE FROM COMPANY WHERE id=?";
 
@@ -83,7 +81,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			con.close();
 		}
 	}
-
+*/
 	@Override
 	public void updateCompany(Company company) throws Exception {
 		con = DriverManager.getConnection(Database.getDBUrl());
@@ -97,11 +95,12 @@ public class CompanyDBDAO implements CompanyDAO {
 
 	}
 
-	@Override
-	public Company getCompany(long id) throws Exception {
-		con = DriverManager.getConnection(Database.getDBUrl());
-		Company company = new Company();
-		try (Statement stm = con.createStatement()) {
+	public void getCompany(Company company) throws Exception {
+		Connection connection = DriverManager.getConnection(
+				"jdbc:mysql://127.0.0.1:3306/coupon_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT",
+				"root", "root");
+		//Company company = new Company();
+		try (Statement stm = connection.createStatement()) {
 			String sql = "SELECT * FROM COMPANY WHERE ID=" + id;
 			ResultSet rs = stm.executeQuery(sql);
 			rs.next();

@@ -1,4 +1,4 @@
-package DB;
+
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,13 +23,13 @@ public class Database {
 		}
 		}
 		public static String geUrl() throws SQLException {
-		Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/coupon_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT");
+		Connection connection = DriverManager.getConnection(url);
 			
 			if (connection != null) {
 				System.out.println("Connected to the database Coupon_DB");
 				
 			}
-			return connection.toString();
+			return url;
 	}
 
 	public static void createTableCompany() throws SQLException {
