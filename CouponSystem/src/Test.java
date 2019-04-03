@@ -28,6 +28,7 @@ public class Test {
 		//facade.addCompany(c2);
 		System.out.println("#### deleting ######");
 		//facade.delCompany(c2);
+		
 		//facade.delCompany(c2);
 		//facade.delCompany(company);
 		//Company company2 = new Company(8, "ddd", "aa", "aa");

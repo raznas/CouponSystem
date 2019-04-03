@@ -1,5 +1,6 @@
 package Company;
 
+import java.sql.SQLException;
 import java.util.Set;
 
 public class CompanyFacade {
@@ -29,8 +30,8 @@ public class CompanyFacade {
 		prodDAO.updateCompany(company);
 	}
 
-	public Company getCompany(long id) {
-				return company;
+	public Company getCompany(long id) throws SQLException {
+				return prodDAO.getCompany(id);
 	}
 
 	public Set<Company> getAllCompanies() throws Exception {
