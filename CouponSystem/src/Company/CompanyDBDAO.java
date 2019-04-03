@@ -13,7 +13,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	Connection connection;
 
 	@Override
-	public void addCompany(Company company) throws Exception {
+	public void createCompany(Company company) throws Exception {
 		Connection connection = DriverManager.getConnection(
 				"jdbc:mysql://127.0.0.1:3306/coupon_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT",
 				"root", "root");
@@ -38,7 +38,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	}
 
 	@Override
-	public void delCompany(Company company) throws SQLException {
+	public void removeCompany(Company company) throws SQLException {
 		Connection connection = DriverManager.getConnection(
 				"jdbc:mysql://127.0.0.1:3306/coupon_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT",
 				"root", "root");
@@ -111,54 +111,32 @@ public class CompanyDBDAO implements CompanyDAO {
 		}
 		return companySelected;
 			}
-	/*
-	public Company getCompany(long id) throws Exception {
-		System.out.println("start");
+
+	@Override
+	public synchronized Set<Company> getAllCompanies() throws Exception {
 		Connection connection = DriverManager.getConnection(
 				"jdbc:mysql://127.0.0.1:3306/coupon_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT",
 				"root", "root");
-		String sql = "SELECT * FROM COMPANY WHERE ID=?";
-		Company company = new Company();
-		try {
-			System.out.println("start2");
-			Statement pstmt = connection.createStatement();
-			pstmt.setLong(1, id);
-			ResultSet rs = pstmt.executeQuery(sql);
-			rs.next();
-			company.setId(rs.getLong("ID"));
-			company.setCompName(rs.getString(2));
-			company.setPassword(rs.getString(3));
-			company.setEmail(rs.getString(4));
-			System.out.println("start3");
-		} catch (SQLException e) {
-			throw new Exception("Unable To Retrieve Company Data");
-		} finally {
-			connection.close();
-		}
-		System.out.println("start4");
-		return company;
-
-	}
-*/
-	@Override
-	public synchronized Set<Company> getAllCompanies() throws Exception {
-		con = DriverManager.getConnection(Database.getDBUrl());
 		Set<Company> set = new HashSet<>();
-		String sql = "SELECT id FROM Company";
-		try (Statement stm = con.createStatement(); ResultSet rs = stm.executeQuery(sql)) {
-			while (rs.next()) {
-				long id = rs.getLong(1);
-				String compName = rs.getString(1);
-				String passowrd = rs.getString(1);
-				String email = rs.getString(1);
+		String sql = "SELECT * FROM Company";
+		try (Statement stm = connection.createStatement(); ResultSet resultSet = stm.executeQuery(sql)) {
+			Company companySelected = new Company();
+			while (resultSet.next()) {
+				long id = resultSet.getLong(1);
+				String comp = resultSet.getString("COMP_NAME");
+				String pass = resultSet.getString("PASSWORD");
+				String email = resultSet.getString("EMAIL");
 
-				set.add(new Company(id, compName, passowrd, email));
+				//set.add(new Company(id, comp, pass, email));
+				//System.out.println("id: " + id + ",COMP_NAME: " + comp + ", PASSWORD: " + pass);
+				companySelected = new Company(id, comp, pass, email);
+				System.out.println(companySelected);
 			}
 		} catch (SQLException e) {
 			System.out.println(e);
 			throw new Exception("Unable To Retrieve Company Data");
 		} finally {
-			con.close();
+			connection.close();
 		}
 		return set;
 	}

@@ -14,13 +14,13 @@ public class CompanyFacade {
 	public CompanyFacade() {
 	}
 
-	public void addCompany(Company company) throws Exception {
-		prodDAO.addCompany(company);
+	public void createCompany(Company company) throws Exception {
+		prodDAO.createCompany(company);
 		
 	}
 
-	public void delCompany(Company company) throws Exception {
-		prodDAO.delCompany(company);
+	public void removeCompany(Company company) throws Exception {
+		prodDAO.removeCompany(company);
 	}
 
 	public void updateCompany(Company company, String newCompName, String newPassword, String newEmail) throws Exception {

@@ -19,9 +19,9 @@ public class Test {
 		//Database.geUrl();
 		//Database.createTableCompany();
 		//System.out.println("##########");
-		Company c1 = new Company(8, "Dell", "abc123", "admin@dell.com");
-		Company company = new Company(6, "Dell", "abc123", "admin@dell.com");
-		Company c2 = new Company(9, "Dell", "abc123", "emc@dell.com");
+		//Company c1 = new Company(8, "Dell", "abc123", "admin@dell.com");
+		//Company company = new Company(6, "Dell", "abc123", "admin@dell.com");
+		//Company c2 = new Company(9, "Dell", "abc123", "emc@dell.com");
 		CompanyFacade facade = new CompanyFacade();
 		//System.out.println("##########");
 		//facade.addCompany(c1);
@@ -37,7 +37,8 @@ public class Test {
 		//facade.delCompany(1);
 		//Database.createTableCoupon();
 		System.out.println("#### get ######");
-		facade.getCompany(4);
+		//facade.getCompany(4);
+		facade.getAllCompanies();
 
 	}
 }
