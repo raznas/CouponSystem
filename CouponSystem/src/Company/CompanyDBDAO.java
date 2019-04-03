@@ -9,25 +9,24 @@ import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
 
-import DB.Database;
-
 public class CompanyDBDAO implements CompanyDAO {
-	Connection con;
+	Connection connection;
 
 	@Override
 	public void addCompany(Company company) throws Exception {
 		Connection connection = DriverManager.getConnection(
 				"jdbc:mysql://127.0.0.1:3306/coupon_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT",
 				"root", "root");
-		String sql = "INSERT INTO COMPANY (COMP_NAME, PASSWORD, EMAIL) VALUES (?,?,?)";
+		String sql = "INSERT INTO COMPANY (ID, COMP_NAME, PASSWORD, EMAIL) VALUES (?,?,?,?)";
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
-			pstmt.setString(1, company.getCompName());
-			pstmt.setString(2, company.getPassword());
-			pstmt.setString(3, company.getEmail());
+			pstmt.setLong(1, company.getId());
+			pstmt.setString(2, company.getCompName());
+			pstmt.setString(3, company.getPassword());
+			pstmt.setString(4, company.getEmail());
 
 			pstmt.executeUpdate();
-			System.out.println("Insterted " + company + " succesfully ");
+			System.out.println("Insert " + company + " succeed ");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new Exception("Company instert failed");
@@ -37,87 +36,115 @@ public class CompanyDBDAO implements CompanyDAO {
 		}
 
 	}
+
 	@Override
-	public void delCompany(Company company) throws Exception {
+	public void delCompany(Company company) throws SQLException {
 		Connection connection = DriverManager.getConnection(
 				"jdbc:mysql://127.0.0.1:3306/coupon_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT",
 				"root", "root");
-		String sql = "DELETE FROM COMPANY WHERE id=?";
-		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-			System.out.println(company);
+		String sql = "DELETE FROM COMPANY WHERE ID = ?";
+		try {
+			PreparedStatement pstmt = connection.prepareStatement(sql);
 			pstmt.setLong(1, company.getId());
 			pstmt.executeUpdate();
-			connection.commit();
+			pstmt.close();
 			System.out.println("Deleted " + company + " succesfully ");
 		} catch (SQLException e) {
-			try {
-				connection.rollback();
-			} catch (SQLException e1) {
-				throw new Exception("Database error");
-			}
-			throw new Exception("failed to remove product");
+			System.out.println("Connection to table Company has failed");
+
 		} finally {
 			connection.close();
 		}
 	}
-	@Override
-	/*public void delCompany(Company company) throws Exception {
-		con = DriverManager.getConnection(Database.getDBUrl());
-		String pre1 = "DELETE FROM COMPANY WHERE id=?";
 
-		try (PreparedStatement pstm1 = con.prepareStatement(pre1);) {
-			con.setAutoCommit(false);
-			pstm1.setLong(1, company.getId());
-			pstm1.executeUpdate();
-			con.commit();
-		} catch (SQLException e) {
-			try {
-				con.rollback();
-			} catch (SQLException e1) {
-				throw new Exception("Database error");
-			}
-			throw new Exception("failed to remove product");
-		} finally {
-			con.close();
-		}
-	}
-*/
 	@Override
 	public void updateCompany(Company company) throws Exception {
-		con = DriverManager.getConnection(Database.getDBUrl());
-		try (Statement stm = con.createStatement()) {
-			String sql = "UPDATE COMPANY " + " SET compName='" + company.getCompName() + "', password='"
-					+ company.getPassword() + "', email='" + company.getEmail() + "' WHERE ID=" + company.getId();
-			stm.executeUpdate(sql);
-		} catch (SQLException e) {
-			throw new Exception("Company update failed");
-		}
-
-	}
-
-	public void getCompany(Company company) throws Exception {
 		Connection connection = DriverManager.getConnection(
 				"jdbc:mysql://127.0.0.1:3306/coupon_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT",
 				"root", "root");
-		//Company company = new Company();
-		try (Statement stm = connection.createStatement()) {
-			String sql = "SELECT * FROM COMPANY WHERE ID=" + id;
-			ResultSet rs = stm.executeQuery(sql);
+		String sql = "UPDATE COMPANY SET COMP_NAME=?,PASSWORD=?,EMAIL=? WHERE ID=?";
+		try {
+			PreparedStatement pstmt = connection.prepareStatement(sql);
+			pstmt.setString(1, company.getCompName());
+			pstmt.setString(2, company.getPassword());
+			pstmt.setString(3, company.getEmail());
+			pstmt.setLong(4, company.getId());
+
+			pstmt.executeUpdate();
+			pstmt.close();
+			System.out.println("Updated " + company + " succesfully ");
+		} catch (SQLException e) {
+			System.out.println("Connection to table Company has failed");
+
+		} finally {
+			connection.close();
+		}
+	}
+
+	@Override
+	public Company getCompany(long id) throws SQLException  {
+		Connection connection = DriverManager.getConnection(
+				"jdbc:mysql://127.0.0.1:3306/coupon_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT",
+				"root", "root");
+		String sql = "SELECT * FROM COMPANY WHERE ID = ?";
+		Company companySelected = new Company();
+		try {
+			PreparedStatement pstmt = connection.prepareStatement(sql);
+			pstmt.setLong(1, id);
+			ResultSet resultSet = pstmt.executeQuery();
+			System.out.println("start");
+			while (resultSet.next()) {
+				
+				String comp = resultSet.getString("COMP_NAME");
+				System.out.println("comp" +comp);
+				//companySelected.setId(resultSet.getLong("ID");
+				//companySelected.setCompName(resultSet.getString("COMP_NAME"));
+				//companySelected.setPassword(resultSet.getString("PASSWARD"));
+				//companySelected.setEmail(resultSet.getString("EMAIL"));
+				companySelected = new Company(id, comp, "aaa", "aa");
+				System.out.println("done");
+				System.out.println(companySelected);
+			}
+			pstmt.close();
+			return companySelected;
+			
+		} catch (SQLException e) {
+			System.out.println("can't get connection to company table");
+
+		} finally {
+			connection.close();
+		}
+		return companySelected;
+			}
+	/*
+	public Company getCompany(long id) throws Exception {
+		System.out.println("start");
+		Connection connection = DriverManager.getConnection(
+				"jdbc:mysql://127.0.0.1:3306/coupon_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT",
+				"root", "root");
+		String sql = "SELECT * FROM COMPANY WHERE ID=?";
+		Company company = new Company();
+		try {
+			System.out.println("start2");
+			Statement pstmt = connection.createStatement();
+			pstmt.setLong(1, id);
+			ResultSet rs = pstmt.executeQuery(sql);
 			rs.next();
-			company.setId(rs.getLong(1));
+			company.setId(rs.getLong("ID"));
 			company.setCompName(rs.getString(2));
 			company.setPassword(rs.getString(3));
 			company.setEmail(rs.getString(4));
-
+			System.out.println("start3");
 		} catch (SQLException e) {
 			throw new Exception("Unable To Retrieve Company Data");
 		} finally {
-			con.close();
+			connection.close();
 		}
+		System.out.println("start4");
 		return company;
 
 	}
-
+*/
 	@Override
 	public synchronized Set<Company> getAllCompanies() throws Exception {
 		con = DriverManager.getConnection(Database.getDBUrl());
@@ -140,4 +167,6 @@ public class CompanyDBDAO implements CompanyDAO {
 		}
 		return set;
 	}
+
+
 }

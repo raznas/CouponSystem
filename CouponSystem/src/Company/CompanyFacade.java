@@ -29,8 +29,8 @@ public class CompanyFacade {
 		prodDAO.updateCompany(company);
 	}
 
-	public Company getCompany() {
-		return company;
+	public Company getCompany(long id) {
+				return company;
 	}
 
 	public Set<Company> getAllCompanies() throws Exception {
