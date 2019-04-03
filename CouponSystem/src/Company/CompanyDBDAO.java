@@ -92,21 +92,16 @@ public class CompanyDBDAO implements CompanyDAO {
 			PreparedStatement pstmt = connection.prepareStatement(sql);
 			pstmt.setLong(1, id);
 			ResultSet resultSet = pstmt.executeQuery();
-			System.out.println("start");
 			while (resultSet.next()) {
 				
 				String comp = resultSet.getString("COMP_NAME");
-				System.out.println("comp" +comp);
-				//companySelected.setId(resultSet.getLong("ID");
-				//companySelected.setCompName(resultSet.getString("COMP_NAME"));
-				//companySelected.setPassword(resultSet.getString("PASSWARD"));
-				//companySelected.setEmail(resultSet.getString("EMAIL"));
-				companySelected = new Company(id, comp, "aaa", "aa");
-				System.out.println("done");
+				String pass = resultSet.getString("PASSWORD");
+				String email = resultSet.getString("EMAIL");
+				companySelected = new Company(id, comp, pass, email);
 				System.out.println(companySelected);
 			}
 			pstmt.close();
-			return companySelected;
+			
 			
 		} catch (SQLException e) {
 			System.out.println("can't get connection to company table");

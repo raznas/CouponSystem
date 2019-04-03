@@ -37,7 +37,7 @@ public class Test {
 		//facade.delCompany(1);
 		//Database.createTableCoupon();
 		System.out.println("#### get ######");
-		facade.getCompany(3);
+		facade.getCompany(4);
 
 	}
 }
