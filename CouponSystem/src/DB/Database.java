@@ -1,3 +1,4 @@
+package DB;
 
 
 import java.sql.Connection;
@@ -38,32 +39,32 @@ public class Database {
 	public static void createTableCompany() throws SQLException {
 		Connection connection = DriverManager.getConnection(url, user, password);
 		Statement statement = connection.createStatement();
-		statement.execute("CREATE TABLE IF NOT EXISTS COMPANY (ID INT PRIMARY KEY ,COMP_NAME VARCHAR(25) NOT NULL, PASSWORD VARCHAR(25) NOT NULL, EMAIL VARCHAR(50) NOT NULL)");
+		statement.execute("CREATE TABLE IF NOT EXISTS COMPANY (ID INT NOT NULL PRIMARY KEY ,COMP_NAME VARCHAR(25) NOT NULL, PASSWORD VARCHAR(25) NOT NULL, EMAIL VARCHAR(50) NOT NULL)");
 		System.out.println("COMPANY table has been created");
 	}
 	public static void createTableCustomer() throws SQLException {
 		Connection connection = DriverManager.getConnection(url, user, password);
 		Statement statement = connection.createStatement();
-		statement.execute("CREATE TABLE IF NOT EXISTS CUSTOMER (ID INT PRIMARY KEY ,CUST_NAME VARCHAR(25) NOT NULL, PASSWORD VARCHAR(50) NOT NULL)");
+		statement.execute("CREATE TABLE IF NOT EXISTS CUSTOMER (ID INT NOT NULL PRIMARY KEY ,CUST_NAME VARCHAR(25) NOT NULL, PASSWORD VARCHAR(50) NOT NULL)");
 		System.out.println("CUSTOMER table has been created");
 	}
 
 	public static void createTableCoupon() throws SQLException {
 		Connection connection = DriverManager.getConnection(url, user, password);
 		Statement statement = connection.createStatement();
-		statement.execute("CREATE TABLE IF NOT EXISTS COUPON (ID INT PRIMARY KEY ,TITLE VARCHAR(25) NOT NULL, START_DATE DATETIME NOT NULL, END_DATE DATETIME NOT NULL ,AMOUNT INT NOT NULL,  MESSAGE VARCHAR(50) NOT NULL, PRICE INT NOT NULL, IMAGE VARCHAR(25) NOT NULL)");
+		statement.execute("CREATE TABLE IF NOT EXISTS COUPON (ID INT NOT NULL PRIMARY KEY ,TITLE VARCHAR(25) NOT NULL, START_DATE DATETIME NOT NULL, END_DATE DATETIME NOT NULL ,AMOUNT INT NOT NULL,  MESSAGE VARCHAR(50) NOT NULL, PRICE INT NOT NULL, IMAGE VARCHAR(25) NOT NULL)");
 		System.out.println("COUPON table has been created");
 	}
 	public static void createTableCustomer_Coupon() throws SQLException {
 		Connection connection = DriverManager.getConnection(url, user, password);
 		Statement statement = connection.createStatement();
-		statement.execute("CREATE TABLE IF NOT EXISTS CUSTOMER_COUPON (CUST_ID INT, COUPON_ID INT, PRIMARY KEY (CUST_ID, COUPON_ID))");
+		statement.execute("CREATE TABLE IF NOT EXISTS CUSTOMER_COUPON (CUST_ID INT NOT NULL, COUPON_ID INT NOT NULL, FOREIGN KEY(CUST_ID) REFERENCES CUSTOMER(ID), FOREIGN KEY(COUPON_ID) REFERENCES COUPON(ID), PRIMARY KEY (CUST_ID, COUPON_ID))");
 		System.out.println("Customer_Coupon table has been created");
 	}
 	public static void createTableCompany_Coupon() throws SQLException {
 		Connection connection = DriverManager.getConnection(url, user, password);
 		Statement statement = connection.createStatement();
-		statement.execute("CREATE TABLE IF NOT EXISTS COMPANY_COUPON (COMP_ID INT, COUPON_ID INT, PRIMARY KEY (COMP_ID, COUPON_ID))");
+		statement.execute("CREATE TABLE IF NOT EXISTS COMPANY_COUPON (COMP_ID INT NOT NULL, COUPON_ID INT NOT NULL, FOREIGN KEY(COMP_ID) REFERENCES COMPANY(ID), FOREIGN KEY(COUPON_ID) REFERENCES COUPON(ID), PRIMARY KEY (COMP_ID, COUPON_ID))");
 		System.out.println("Company_Coupon table has been created");
 	}
 	

@@ -1,5 +1,6 @@
 package Company;
 
+ 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,14 +10,20 @@ import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.mysql.cj.jdbc.DatabaseMetaData;
+
+import DB.Database;
+
 public class CompanyDBDAO implements CompanyDAO {
 	Connection connection;
 
 	@Override
 	public void createCompany(Company company) throws Exception {
-		Connection connection = DriverManager.getConnection(
-				"jdbc:mysql://127.0.0.1:3306/coupon_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT",
-				"root", "root");
+		//Connection connection = DriverManager.getConnection(
+			//	"jdbc:mysql://127.0.0.1:3306/coupon_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT",
+				//"root", "root");
+		
+		Connection connection = DriverManager.getConnection(Database.getUrl(), Database.getUser(), Database.getPass());
 		String sql = "INSERT INTO COMPANY (ID, COMP_NAME, PASSWORD, EMAIL) VALUES (?,?,?,?)";
 		try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
@@ -127,8 +134,6 @@ public class CompanyDBDAO implements CompanyDAO {
 				String pass = resultSet.getString("PASSWORD");
 				String email = resultSet.getString("EMAIL");
 
-				//set.add(new Company(id, comp, pass, email));
-				//System.out.println("id: " + id + ",COMP_NAME: " + comp + ", PASSWORD: " + pass);
 				companySelected = new Company(id, comp, pass, email);
 				System.out.println(companySelected);
 			}
