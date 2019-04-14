@@ -15,7 +15,7 @@ public class Database {
 
 	 static final String url = "jdbc:mysql://127.0.0.1:3306/coupon_db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT";
 	 static final String user = "root";
-	 static final String password = "root";
+	 static final String password = "ofirVD1995";
 
 	public static void checkConection() throws SQLException {
 		Connection connection = DriverManager.getConnection(url, user, password);
